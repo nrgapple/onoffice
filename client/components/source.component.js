@@ -57,6 +57,8 @@ AFRAME.registerSystem('source', {
                 screen.setAttribute('material', 'shader: flat; height: ' + videoEl.videoHeight + '; width: ' + videoEl.videoWidth);
                 screen.setAttribute('scale', `${sizeX} ${sizeY} 1`);
                 screen.setAttribute('source', '');
+                screen.setAttribute('mixin', 'interactive');
+                screen.setAttribute('class', "grabbable");
 
                 if (location.search && location.search.indexOf('no-source') >= 0) {
                     screen.setAttribute('color', 'lightgreen');

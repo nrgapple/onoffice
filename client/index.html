@@ -3,6 +3,7 @@
 <script src="./vendor/aframe.min.js"></script>
 <script src="./vendor/peerjs.min.js"></script>
 <script src="./vendor/vue.min.js"></script>
+<script src="./vendor/super-hands.min.js"></script>
 
 <script src="./socket.io/socket.io.js"></script>
 <script src="systems/cursor-position.system.js"></script>
@@ -27,14 +28,47 @@
         </div>
     </div>
 </div>
-<a-scene embedded vr-mode-ui="enabled: false" antialias="true">
+<a-scene embedded vr-mode-ui="enabled: false" antialias="true" physics="gravity: 0">
     <a-assets>
+        <a-mixin id="pointer" raycaster="showLine: true; objects: .grabbable, a-link, .log, #screen"
+                line="visible: true; color: lawngreen; opacity: .5"
+                super-hands="colliderEvent: raycaster-intersection;
+                                grabStartButtons: gripdown;
+                                grabEndButtons: gripup, stretch-start;
+                                stretchStartButtons: gripdown;
+                                stretchEndButtons: gripup;
+                                colliderEventProperty: els;
+                                colliderEndEvent:raycaster-intersection-cleared;
+                                colliderEndEventProperty: clearedEls;">
+        </a-mixin>
+
+        <a-mixin id="controller-right" mixin="pointer"
+                vive-controls="hand: right" oculus-touch-controls="hand: right"
+                windows-motion-controls="hand: right"
+                gearvr-controls daydream-controls oculus-go-controls
+                tracked-controls="autoHide: off">
+        </a-mixin>
+        <a-mixin id="controller-left" mixin="pointer"
+            vive-controls="hand: left" oculus-touch-controls="hand: left"
+            windows-motion-controls="hand: left"
+            tracked-controls="autoHide: off">
+        </a-mixin>
+
+        <a-mixin id="interactive" 
+            hoverable grabbable stretchable draggable droppable
+            event-set__dragdrop="_event: drag-drop; geometry.radius: 0.25; geometry.primitive: sphere">
+        </a-mixin>
+        
         <img id="cursorImg" src="./assets/cursor.svg" />
         <video id="remote" muted autoplay></video>
     </a-assets>
 
     <a-entity position="0 0 0" camera look-controls>
         <a-text id="connection-lost" align="center" value="Connection lost\nPlease refresh your browser" position="0 0 -.5" scale=".2 .2 .2"></a-text>
+    </a-entity>
+    <a-entity id="hands">
+            <a-entity id="rightHand" mixin="controller-right"></a-entity>
+            <a-entity id="leftHand" mixin="controller-left"></a-entity>
     </a-entity>
 
     <a-entity id="sources"></a-entity>
